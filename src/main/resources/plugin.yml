@@ -1,0 +1,4 @@
+name: coffin
+version: '${project.version}'
+main: how.gabe.coffin.Coffin
+api-version: '1.20'
