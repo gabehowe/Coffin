@@ -90,7 +90,7 @@ class Coffin : JavaPlugin(), Listener {
     @EventHandler
     fun onCoffinExplodedByEntityEvent(event: EntityExplodeEvent) {
         for (i in ArrayList(event.blockList())) {
-            if (!(i.state as TileState).persistentDataContainer.has(key)) continue
+            if (i !in this.coffins) continue
             event.blockList().remove(i)
         }
     }
@@ -116,6 +116,7 @@ class Coffin : JavaPlugin(), Listener {
                 block.world.dropItem(block.location + Location(block.world, 0.5, 0.0, 0.5), i)
             }
         }
+        contents[block] = mutableListOf<ItemStack>().toTypedArray()
         return true
     }
 
