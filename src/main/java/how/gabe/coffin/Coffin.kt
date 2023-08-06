@@ -4,9 +4,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
-import org.bukkit.block.Barrel
 import org.bukkit.block.Block
-import org.bukkit.block.TileState
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
@@ -36,6 +34,7 @@ class Coffin : JavaPlugin(), Listener {
 
     @EventHandler
     fun onPlayerDeathEvent(event: PlayerDeathEvent) {
+        if (event.drops.isEmpty()) return
         var block = event.entity.location.block
         val noBurn = mutableListOf(
             Material.ANCIENT_DEBRIS
@@ -67,7 +66,8 @@ class Coffin : JavaPlugin(), Listener {
                     break
                 }
 
-                testBlock = Location(block.world, block.x.toDouble(), (block.y - i).toDouble(), block.z.toDouble()).block
+                testBlock =
+                    Location(block.world, block.x.toDouble(), (block.y - i).toDouble(), block.z.toDouble()).block
 
                 if (testBlock.type == Material.AIR || testBlock.type == Material.WATER) {
                     block = testBlock
@@ -81,7 +81,7 @@ class Coffin : JavaPlugin(), Listener {
         contents[block] = newDrops.toTypedArray()
         this.coffins += block
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, {
-            if ((block.state as Barrel).persistentDataContainer.has(key)) {
+            if (block.type == Material.WAXED_WEATHERED_CUT_COPPER) {
                 block.type = Material.AIR
             }
         }, config.getLong("despawn-timer") * 20L)
